@@ -1,0 +1,16 @@
+name = "listing-deck-token-exchange"
+main = "worker.js"
+compatibility_date = "2024-11-01"
+
+# Non-secret config. Override per environment with `-e sandbox` / `-e production`,
+# or just edit [vars] directly for a single-environment setup.
+[vars]
+EBAY_ENV = "sandbox"
+
+# Secrets are NOT set here — see README.md and run:
+#   wrangler secret put EBAY_CLIENT_ID
+#   wrangler secret put EBAY_CLIENT_SECRET
+#   wrangler secret put EBAY_REDIRECT_URI
+
+[env.production]
+vars = { EBAY_ENV = "production" }

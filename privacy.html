@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Listing Deck</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --border: #e2e2e5;
+    --accent: #2563eb;
+    --warn-bg: #fff7e6;
+    --warn-border: #e8b04b;
+    --warn-text: #6b4a00;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --card: #232427;
+      --text: #f0f0f2;
+      --muted: #9a9ba1;
+      --border: #35363a;
+      --accent: #6ea8fe;
+      --warn-bg: #2b2410;
+      --warn-border: #7a5c1e;
+      --warn-text: #e8c477;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    line-height: 1.6;
+  }
+  .wrap {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+  }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 40px;
+  }
+  h1 { font-size: 26px; margin: 0 0 4px; }
+  .updated { color: var(--muted); font-size: 13px; margin-bottom: 32px; }
+  h2 { font-size: 17px; margin: 32px 0 10px; }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px; padding-left: 20px; }
+  li { margin-bottom: 6px; }
+  a { color: var(--accent); }
+  .callout {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-border);
+    color: var(--warn-text);
+    border-radius: 8px;
+    padding: 14px 16px;
+    font-size: 13px;
+    margin: 16px 0;
+  }
+  .placeholder {
+    background: rgba(255, 176, 32, 0.18);
+    border-bottom: 1px dashed var(--warn-border);
+    padding: 0 2px;
+  }
+  footer {
+    margin-top: 40px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Privacy Policy</h1>
+      <p class="updated">Effective date: <span class="placeholder">[EFFECTIVE DATE]</span></p>
+
+      <p>
+        This policy describes how <strong>Listing Deck</strong>
+        ("the app", "we", "us") handles information when you connect your
+        eBay seller account.
+      </p>
+
+      <h2>Who we are</h2>
+      <p>
+        Listing Deck is operated by
+        <span class="placeholder">[YOUR LEGAL NAME]</span>.
+        You can reach us at
+        <a href="mailto:[YOUR CONTACT EMAIL]"><span class="placeholder">[YOUR CONTACT EMAIL]</span></a>
+        with any question about this policy or your data.
+      </p>
+
+      <h2>What the app does</h2>
+      <p>
+        Listing Deck connects to your eBay seller account via eBay's OAuth
+        flow to help you create and manage listings. It acts on your behalf
+        using the access you explicitly grant during that flow.
+      </p>
+
+      <h2>What we access</h2>
+      <p>
+        Through the eBay API, and only with your authorization, the app can
+        read and write the seller-account data needed for the features you
+        use — for example, your listing drafts, inventory items, and
+        catalog details. The exact scopes requested are listed on eBay's own
+        consent screen before you approve the connection.
+        <span class="placeholder">[LIST THE SPECIFIC EBAY API SCOPES YOU REQUEST, e.g. sell.inventory, sell.account]</span>
+      </p>
+
+      <h2>What is not stored</h2>
+      <!--
+        DEVELOPER NOTE — do not find-and-replace this section blindly.
+        This claim is load-bearing: it's the same assertion behind the
+        eBay Marketplace Account Deletion / Closure Notification opt-out
+        declared in the developer application (checklist step 5). That
+        opt-out is only honest for as long as this statement stays true.
+        The day order handling, buyer messaging, or shipping/returns
+        data is added, THIS SECTION MUST BE REWRITTEN and the account-
+        deletion notification endpoint (or a fresh opt-out review) has
+        to be revisited before shipping that feature.
+      -->
+      <div class="callout">
+        We do not access, receive, or store buyer personal data, and we do
+        not process order information. The app's connection to eBay is
+        limited to seller-side listing and inventory management. If that
+        scope ever changes — for example, if the app adds order handling —
+        this policy and our eBay account-deletion compliance will be
+        updated first.
+      </div>
+
+      <h2>Data retention</h2>
+      <p>
+        We retain only what is needed to operate the features you use:
+        your eBay OAuth tokens (so we don't have to ask you to reconnect
+        constantly) and the minimal application data tied to your account
+        (such as saved listing drafts you created in the app). You can
+        request deletion of this data at any time by contacting us at the
+        address above.
+        <span class="placeholder">[ADD SPECIFICS ONCE STORAGE IS BUILT — e.g. where tokens live, retention period, encryption at rest]</span>
+      </p>
+
+      <h2>Third parties</h2>
+      <p>
+        We do not sell your data. We share data with eBay only as required
+        to operate the features you use, and with
+        <span class="placeholder">[LIST ANY THIRD-PARTY INFRASTRUCTURE, e.g. your hosting/serverless provider]</span>
+        solely to run the app's infrastructure.
+      </p>
+
+      <h2>Your rights</h2>
+      <p>
+        You can disconnect the app from your eBay account at any time from
+        your eBay account settings, and you can ask us to delete any data
+        we hold about you by emailing the address above.
+      </p>
+
+      <h2>Changes to this policy</h2>
+      <p>
+        If this policy changes in a way that affects what data we access or
+        store, we'll update the effective date above and, where required,
+        notify you before the change takes effect.
+      </p>
+
+      <footer>
+        <span class="placeholder">[YOUR LEGAL NAME]</span> &middot;
+        <a href="mailto:[YOUR CONTACT EMAIL]"><span class="placeholder">[YOUR CONTACT EMAIL]</span></a>
+      </footer>
+    </div>
+  </div>
+</body>
+</html>

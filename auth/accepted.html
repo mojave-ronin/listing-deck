@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Authorization Accepted</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --accent: #0a7d3c;
+    --border: #e2e2e5;
+    --mono-bg: #f0f1f3;
+    --danger: #b3261e;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --card: #232427;
+      --text: #f0f0f2;
+      --muted: #9a9ba1;
+      --accent: #3ddc84;
+      --border: #35363a;
+      --mono-bg: #1b1c1e;
+      --danger: #ff6b60;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 560px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  h1 {
+    font-size: 20px;
+    margin: 0;
+  }
+  p.lede {
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+  .field-label {
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--muted);
+    margin: 24px 0 6px;
+  }
+  .code-row {
+    display: flex;
+    gap: 8px;
+  }
+  textarea#code-output {
+    flex: 1;
+    resize: none;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 13px;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--mono-bg);
+    color: var(--text);
+    height: 84px;
+  }
+  button#copy-btn {
+    flex-shrink: 0;
+    align-self: flex-start;
+    padding: 10px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--mono-bg);
+    color: var(--text);
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  button#copy-btn:hover { filter: brightness(1.08); }
+  button#copy-btn.copied { color: var(--accent); border-color: var(--accent); }
+  .meta {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .meta code {
+    background: var(--mono-bg);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+  .error-box {
+    display: none;
+    margin-top: 16px;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  footer {
+    margin-top: 24px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="status">
+      <span class="dot"></span>
+      <h1>Authorization accepted</h1>
+    </div>
+    <p class="lede">
+      eBay redirected here with an authorization code. This page is a static
+      dev helper &mdash; it reads the code off the URL, decodes it (including
+      the double-encoding eBay sometimes applies), and lets you copy it
+      straight into your token exchange step. No server involved.
+    </p>
+
+    <div class="field-label">Authorization code</div>
+    <div class="code-row">
+      <textarea id="code-output" readonly placeholder="No code found on this URL yet&hellip;"></textarea>
+      <button id="copy-btn" type="button">Copy</button>
+    </div>
+
+    <div id="expires-meta" class="meta" style="display:none;">
+      Expires in <code id="expires-value"></code> seconds from when eBay issued it &mdash;
+      exchange it for a token promptly.
+    </div>
+
+    <div id="error-box" class="error-box"></div>
+
+    <footer>
+      Once your real token-exchange endpoint exists, set that endpoint&rsquo;s
+      URL as the redirect (Auth accepted) URL in your eBay app instead of this
+      page.
+    </footer>
+  </div>
+
+  <script>
+    // eBay appends `code` (and usually `expires_in`) to this URL's query
+    // string on redirect. The tricky part: the code itself is already
+    // percent-encoded by eBay, and depending on how it got here it can end
+    // up encoded *twice* (a well-known eBay OAuth gotcha) — so a single
+    // decodeURIComponent() can leave literal "%2f"-style sequences in the
+    // result. We decode repeatedly until decoding stops changing the
+    // string, which handles single- or double-encoded values the same way.
+    function fullyDecode(value) {
+      var current = value;
+      for (var i = 0; i < 5; i++) {
+        var next;
+        try {
+          next = decodeURIComponent(current);
+        } catch (e) {
+          // Malformed percent-sequence: stop rather than throw.
+          break;
+        }
+        if (next === current) break;
+        current = next;
+      }
+      return current;
+    }
+
+    function getRawParam(search, key) {
+      // Read the RAW (not pre-decoded) value for a query param, since
+      // URLSearchParams / location.search parsing already performs one
+      // decode pass and would hide whether double-encoding happened.
+      var qs = search.replace(/^\?/, '');
+      var pairs = qs.length ? qs.split('&') : [];
+      for (var i = 0; i < pairs.length; i++) {
+        var idx = pairs[i].indexOf('=');
+        var k = idx === -1 ? pairs[i] : pairs[i].slice(0, idx);
+        if (k === key) {
+          return idx === -1 ? '' : pairs[i].slice(idx + 1);
+        }
+      }
+      return null;
+    }
+
+    var output = document.getElementById('code-output');
+    var copyBtn = document.getElementById('copy-btn');
+    var errorBox = document.getElementById('error-box');
+    var expiresMeta = document.getElementById('expires-meta');
+    var expiresValue = document.getElementById('expires-value');
+
+    var rawCode = getRawParam(window.location.search, 'code');
+    var rawExpires = getRawParam(window.location.search, 'expires_in');
+
+    if (rawCode === null) {
+      errorBox.style.display = 'block';
+      errorBox.textContent = 'No "code" parameter was found on this URL. ' +
+        'Did eBay redirect here with a query string, or did the user land ' +
+        'on this page directly?';
+      copyBtn.disabled = true;
+    } else {
+      output.value = fullyDecode(rawCode);
+    }
+
+    if (rawExpires !== null) {
+      expiresMeta.style.display = 'block';
+      expiresValue.textContent = fullyDecode(rawExpires);
+    }
+
+    copyBtn.addEventListener('click', function () {
+      if (!output.value) return;
+      output.select();
+      output.setSelectionRange(0, output.value.length);
+      var done = function () {
+        copyBtn.textContent = 'Copied';
+        copyBtn.classList.add('copied');
+        setTimeout(function () {
+          copyBtn.textContent = 'Copy';
+          copyBtn.classList.remove('copied');
+        }, 1500);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(output.value).then(done, function () {
+          document.execCommand('copy');
+          done();
+        });
+      } else {
+        document.execCommand('copy');
+        done();
+      }
+    });
+  </script>
+</body>
+</html>

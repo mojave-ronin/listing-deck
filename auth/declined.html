@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>Authorization Declined</title>
+<style>
+  :root {
+    color-scheme: light dark;
+    --bg: #f7f7f8;
+    --card: #ffffff;
+    --text: #1a1a1a;
+    --muted: #6b7280;
+    --accent: #b3261e;
+    --border: #e2e2e5;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #17181a;
+      --card: #232427;
+      --text: #f0f0f2;
+      --muted: #9a9ba1;
+      --accent: #ff6b60;
+      --border: #35363a;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    padding: 24px;
+  }
+  .card {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+  }
+  .status {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+  h1 { font-size: 20px; margin: 0; }
+  p.lede { color: var(--muted); margin-top: 8px; line-height: 1.5; }
+  .reason {
+    margin-top: 16px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .reason code {
+    background: rgba(127,127,127,0.12);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="status">
+      <span class="dot"></span>
+      <h1>Authorization declined</h1>
+    </div>
+    <p class="lede">
+      eBay reported that consent was not granted, so no authorization code
+      was issued. You can close this tab and try connecting the account
+      again from the app whenever you&rsquo;re ready.
+    </p>
+    <div id="reason" class="reason" style="display:none;">
+      eBay reported: <code id="reason-value"></code>
+    </div>
+  </div>
+
+  <script>
+    function getRawParam(search, key) {
+      var qs = search.replace(/^\?/, '');
+      var pairs = qs.length ? qs.split('&') : [];
+      for (var i = 0; i < pairs.length; i++) {
+        var idx = pairs[i].indexOf('=');
+        var k = idx === -1 ? pairs[i] : pairs[i].slice(0, idx);
+        if (k === key) {
+          return idx === -1 ? '' : pairs[i].slice(idx + 1);
+        }
+      }
+      return null;
+    }
+    // eBay's decline redirect can carry `error` / `error_description`.
+    var err = getRawParam(window.location.search, 'error_description') ||
+               getRawParam(window.location.search, 'error');
+    if (err) {
+      try { err = decodeURIComponent(err); } catch (e) {}
+      document.getElementById('reason').style.display = 'block';
+      document.getElementById('reason-value').textContent = err;
+    }
+  </script>
+</body>
+</html>
